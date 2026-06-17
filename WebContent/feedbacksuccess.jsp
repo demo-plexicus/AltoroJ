@@ -71,23 +71,23 @@ IBM AltoroJ
 			<table border=0>
 			  <tr>
 			    <td align=right>Your Name:</td>
-			    <td valign=top><%=feedbackDetails.getName() %></td>
+			    <td valign=top><%=ServletUtil.sanitizeWeb(feedbackDetails.getName()) %></td>
 			  </tr>
 			  <tr>
 			    <td align=right>Your Email Address:</td>
-			    <td valign=top><%=feedbackDetails.getEmail() %></td>
+			    <td valign=top><%=ServletUtil.sanitizeWeb(feedbackDetails.getEmail()) %></td>
 			  </tr>
 			  <tr>
 			    <td align=right>Subject:</td>
-			    <td valign=top><%=feedbackDetails.getSubject() %></td>
+			    <td valign=top><%=ServletUtil.sanitizeWeb(feedbackDetails.getSubject()) %></td>
 			  </tr>
 			  <tr>
 			    <td align=right valign=top>Question/Comment:</td>
-			    <td><%=feedbackDetails.getMessage()%></td>
+			    <td><%=ServletUtil.sanitizeWeb(feedbackDetails.getMessage())%></td>
 			  </tr>
 			</table>
 		<% } %>
-		</p>
+
 		<% } %>
 		</div>
     </td>	
