@@ -6,6 +6,19 @@
   },
   
   "basePath": "/AltoroJ/api",
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Bearer token authentication. Provide the token as: Bearer {token}"
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
   "tags": [
     {
       "name": "1. Login",
@@ -75,6 +88,7 @@
         "produces": [
           "application/json"
         ],
+        "security": [],
         "parameters": [
         	{
             "in": "body",
@@ -318,6 +332,7 @@
         "produces": [
           "application/json"
         ],
+        "security": [],
         "responses": {
           "200": {
             "description": "Successful operation"
@@ -380,11 +395,12 @@
             "required": true,
             "type": "string"
           }
-        ]
+        ],
+        "security": []
       }
     },
     "/admin/addUser": {
-      "post": {
+
         "tags": [
           "5. Admin"
         ],
