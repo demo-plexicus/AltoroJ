@@ -58,7 +58,7 @@ IBM AltoroJ
 		java.lang.String error = (String)request.getSession().getAttribute("message");
 		
 		if (error != null && error.trim().length() > 0){
-			out.print(error);
+			out.print(ServletUtil.sanitizeWeb(error));
 		}
 		%>
 		</span></p>
@@ -87,7 +87,7 @@ IBM AltoroJ
 		    <td>
 		      	<select name="username" id="username" size="1">
 					<% for (String user:users){ %>
-					<option value="<%=user%>"><%=user%></option>
+					<option value="<%=ServletUtil.sanitizeWeb(user)%>"><%=ServletUtil.sanitizeWeb(user)%></option>
 					<%} %>
 				</select>
 		    </td>
@@ -123,11 +123,11 @@ IBM AltoroJ
 		    <td>
 		        <select name="username" id="username" size="1">
 					<% for (String user:users){ %>
-					<option value="<%=user%>"><%=user%></option>
+					<option value="<%=ServletUtil.sanitizeWeb(user)%>"><%=ServletUtil.sanitizeWeb(user)%></option>
 					<%} %>
 				</select>
 		    </td>
-		    <td>
+
 		      <input type="password" name="password1">
 		    </td>
 		    <td>
