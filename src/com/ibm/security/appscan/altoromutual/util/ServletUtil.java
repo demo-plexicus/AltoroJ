@@ -360,11 +360,11 @@ public class ServletUtil {
 			if (user == null)
 				return false;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log4AltoroJ.getInstance().logError("Failed to check login status with error: "+e.getMessage());
 			return false;
 		}
 		
-		return true;
+
 	}
 	
 	static public User getUser(HttpServletRequest request){
