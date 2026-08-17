@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     
 <%
 /**
@@ -56,7 +57,7 @@ IBM AltoroJ
 		  </tr>
 		  <tr>
 		    <td align=right>Your Name:</td>
-		    <td valign=top><input name="name" size=25 type=text value = "<%= ((user != null && user.getFirstName() != null)?user.getFirstName()+" ":"") + ((user != null && user.getLastName() != null)?user.getLastName():"") %>"></td>
+		    <td valign=top><input name="name" size=25 type=text value = "<%= fn:escapeXml(((user != null && user.getFirstName() != null)?user.getFirstName()+" ":"") + ((user != null && user.getLastName() != null)?user.getLastName():"")) %>"></td>
 		  </tr>
 		  <tr>
 		    <td align=right>Your Email Address:</td>
