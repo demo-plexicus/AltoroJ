@@ -27,6 +27,7 @@ IBM AltoroJ
 	<jsp:include page="membertoc.jspf"/>
     <td valign="top" colspan="3" class="bb">
     	<%@page import="com.ibm.security.appscan.altoromutual.model.Account"%>
+		<%@page import="com.ibm.security.appscan.altoromutual.util.ServletUtil"%>
 		
 		<%
 					com.ibm.security.appscan.altoromutual.model.User user = (com.ibm.security.appscan.altoromutual.model.User)request.getSession().getAttribute("user");
@@ -98,7 +99,7 @@ IBM AltoroJ
 		  </tr>
 		  <tr>
 		    <td colspan="2" align="center">
-		    <span id="_ctl0__ctl0_Content_Main_postResp" align="center"><span style='color: Red'><%=(request.getAttribute("message")==null)?"":request.getAttribute("message") %></span></span>
+		    <span id="_ctl0__ctl0_Content_Main_postResp" align="center"><span style='color: Red'><%=(request.getAttribute("message")==null)?"":ServletUtil.sanitizeWeb((String)request.getAttribute("message")) %></span></span>
 		    <span id="soapResp" name="soapResp" align="center" />
 		    </td>
 		  </tr>
