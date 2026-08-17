@@ -11,7 +11,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.wink.json4j.*;
 
+import com.ibm.security.appscan.altoromutual.model.User;
 import com.ibm.security.appscan.altoromutual.util.DBUtil;
+import com.ibm.security.appscan.altoromutual.util.OperationsUtil;
 import com.ibm.security.appscan.altoromutual.util.ServletUtil;
 
 @Path("/admin")
@@ -67,7 +69,15 @@ public class AdminAPI extends AltoroAPI{
 	public Response addUser(String bodyJSON, @Context HttpServletRequest request) throws IOException{
 		JSONObject bodyJson= new JSONObject();
 		
-		//Checking if user is logged in
+		//Verify the caller is an authenticated administrator before allowing user creation
+		try {
+			User user = OperationsUtil.getUser(request);
+			if (user == null || user.getRole() != User.Role.Admin){
+				return Response.status(Response.Status.FORBIDDEN).entity("{\"error\":\"You are not authorized to perform this operation.\"}").build();
+			}
+		} catch (Exception e) {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("{\"error\":\"You must be logged in to perform this operation.\"}").build();
+		}
 		
 		String firstname;
 		String lastname;
@@ -103,7 +113,7 @@ public class AdminAPI extends AltoroAPI{
 			error = DBUtil.addUser(username, password1, firstname, lastname);
 		
 		if (error != null)
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"error\":\""+error+"\"}").build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"error\":\"An error has occurred. Please try again later.\"}").build();
 		
 		
 		return Response.status(Response.Status.OK).entity("{\"success\":\"Requested operation has completed successfully.\"}").type(MediaType.APPLICATION_JSON_TYPE).build();

@@ -144,11 +144,15 @@ public class AccountAPI extends AltoroAPI {
 	public Response getTransactions(@PathParam("accountNo") String accountNo,
 			String bodyJSON, @Context HttpServletRequest request) throws SQLException {
 
-		/*if (!this.loggedIn(request)) {
-			return Response.status(401).entity("{\"loggedIn\" : \"false\"}")
-					.build();
-		}*/
-		User user = OperationsUtil.getUser(request);
+		User user;
+		try {
+			user = OperationsUtil.getUser(request);
+			if (user == null){
+				return Response.status(Response.Status.UNAUTHORIZED).entity("{\"loggedIn\" : \"false\"}").build();
+			}
+		} catch (Exception e) {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("{\"loggedIn\" : \"false\"}").build();
+		}
 		String startString;
 		String endString;
 		
@@ -172,7 +176,7 @@ public class AccountAPI extends AltoroAPI {
 					account);
 		} catch (SQLException e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity("{Error : Database failed to return requested data} " + e.getLocalizedMessage())
+					.entity("{Error : Database failed to return the requested data}")
 					.build();
 		}
 
@@ -202,7 +206,7 @@ public class AccountAPI extends AltoroAPI {
 			myJson =new JSONObject(response);
 			return Response.status(Response.Status.OK).entity(myJson.toString()).type(MediaType.APPLICATION_JSON_TYPE).build();
 		} catch (JSONException e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error has occurred: " + e.getLocalizedMessage()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error has occurred: The requested data could not be processed.").build();
 		}
 	}
 
