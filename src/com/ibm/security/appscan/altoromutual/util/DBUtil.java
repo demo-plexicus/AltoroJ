@@ -20,6 +20,7 @@ package com.ibm.security.appscan.altoromutual.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -375,32 +376,45 @@ public class DBUtil {
 			Connection connection = getConnection();
 
 			
-			Statement statement = connection.createStatement();
+			StringBuilder query = new StringBuilder("SELECT * FROM TRANSACTIONS WHERE (");
+			query.append("ACCOUNTID = " + accounts[0].getAccountId());
+			for (int i=1; i<accounts.length; i++){
+				query.append(" OR ACCOUNTID = "+accounts[i].getAccountId());	
+			}
+			
+			ArrayList<Object> params = new ArrayList<Object>();
+			StringBuilder dateClause = new StringBuilder();
+			
+			if (startDate != null && startDate.length()>0 && endDate != null && endDate.length()>0){
+				dateClause.append("DATE BETWEEN ? AND ?");
+				params.add(startDate + " 00:00:00");
+				params.add(endDate + " 23:59:59");
+			} else if (startDate != null && startDate.length()>0){
+				dateClause.append("DATE > ?");
+				params.add(startDate + " 00:00:00");
+			} else if (endDate != null && endDate.length()>0){
+				dateClause.append("DATE < ?");
+				params.add(endDate + " 23:59:59");
+			}
+			
+			query.append(") ");
+			if (dateClause.length() > 0)
+				query.append("AND (").append(dateClause).append(") ");
+			query.append("ORDER BY DATE DESC");
+			
+			PreparedStatement statement = connection.prepareStatement(query.toString());
 			
 			if (rowCount > 0)
 				statement.setMaxRows(rowCount);
-
-			StringBuffer acctIds = new StringBuffer();
-			acctIds.append("ACCOUNTID = " + accounts[0].getAccountId());
-			for (int i=1; i<accounts.length; i++){
-				acctIds.append(" OR ACCOUNTID = "+accounts[i].getAccountId());	
+			
+			for (int i=0; i<params.size(); i++){
+				statement.setObject(i+1, params.get(i));
 			}
 			
-			String dateString = null;
-			
-			if (startDate != null && startDate.length()>0 && endDate != null && endDate.length()>0){
-				dateString = "DATE BETWEEN '" + startDate + " 00:00:00' AND '" + endDate + " 23:59:59'";
-			} else if (startDate != null && startDate.length()>0){
-				dateString = "DATE > '" + startDate +" 00:00:00'";
-			} else if (endDate != null && endDate.length()>0){
-				dateString = "DATE < '" + endDate + " 23:59:59'";
-			}
-			
-			String query = "SELECT * FROM TRANSACTIONS WHERE (" + acctIds.toString() + ") " + ((dateString==null)?"": "AND (" + dateString + ") ") + "ORDER BY DATE DESC" ;
 			ResultSet resultSet = null;
 			
 			try {
-				resultSet = statement.executeQuery(query);
+				resultSet = statement.executeQuery();
 			} catch (SQLException e){
 				int errorCode = e.getErrorCode();
 				if (errorCode == 30000)
