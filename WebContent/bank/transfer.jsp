@@ -58,6 +58,7 @@ IBM AltoroJ
 		<form id="tForm" name="tForm" method="post" action="doTransfer" onsubmit="return (confirminput(tForm));">
 		
 		<h1>Transfer Funds</h1>
+		<input type="hidden" name="csrfToken" value="<%= request.getAttribute("csrfToken") == null ? "" : request.getAttribute("csrfToken") %>">
 		
 		<table cellSpacing="0" cellPadding="1" width="100%" border="0">
 		  <tr>
