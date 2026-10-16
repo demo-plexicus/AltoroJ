@@ -22,7 +22,8 @@ public class AdminAPI extends AltoroAPI{
 	public Response changePassword(String bodyJSON, @Context HttpServletRequest request) throws IOException{
 		JSONObject bodyJson= new JSONObject();
 		
-		//Don't really care if the user is admin or not - I think that's how it works in AltoroJ
+		//Authorization is enforced after parsing the request (caller must be an
+		//admin, or the account owner changing their own password)
 				
 		//Convert request to JSON
 		String username;
@@ -49,6 +50,14 @@ public class AdminAPI extends AltoroAPI{
 		if (!password1.equals(password2)){
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"error\":\"Entered passwords did not match.\"}").build();
 		}
+		
+		//Authorization check: the caller must be logged in and either an admin
+		//or the account owner changing their own password
+		com.ibm.security.appscan.altoromutual.model.User callerUser = ServletUtil.getUser(request);
+		if (callerUser == null
+				|| (callerUser.getRole() != com.ibm.security.appscan.altoromutual.model.User.Role.Admin
+					&& !callerUser.getUsername().equals(username)))
+			return Response.status(Response.Status.FORBIDDEN).entity("{\"error\":\"Not authorized to change this password\"}").build();
 	
 		String error = null;
 		
