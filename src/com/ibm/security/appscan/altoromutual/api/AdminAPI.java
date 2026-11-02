@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.wink.json4j.*;
 
+import com.ibm.security.appscan.altoromutual.model.User;
 import com.ibm.security.appscan.altoromutual.util.DBUtil;
 import com.ibm.security.appscan.altoromutual.util.ServletUtil;
 
@@ -22,8 +23,11 @@ public class AdminAPI extends AltoroAPI{
 	public Response changePassword(String bodyJSON, @Context HttpServletRequest request) throws IOException{
 		JSONObject bodyJson= new JSONObject();
 		
-		//Don't really care if the user is admin or not - I think that's how it works in AltoroJ
-				
+		//Only administrators may change other users' passwords
+		User user = ServletUtil.getUser(request);
+		if (user == null || !Role.Admin.equals(user.getRole()))
+			return Response.status(Response.Status.UNAUTHORIZED).entity("{\"error\": \"Unauthorized\"}").build();
+
 		//Convert request to JSON
 		String username;
 		String password1;
