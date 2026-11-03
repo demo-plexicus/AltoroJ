@@ -43,7 +43,7 @@
   </filter-mapping>
   <filter-mapping>
     <filter-name>AdminFilter</filter-name>
-    <url-pattern>/adimn/*</url-pattern>
+    <url-pattern>/admin/*</url-pattern>
     <dispatcher>FORWARD</dispatcher>
     <dispatcher>INCLUDE</dispatcher>
     <dispatcher>REQUEST</dispatcher>
